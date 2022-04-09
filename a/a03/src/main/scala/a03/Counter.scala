@@ -34,9 +34,7 @@ object Number2S {
   implicit def number2sImplicitMinus[T1 <: Number1, T2 <: Number2, T3 <: Number1](implicit
     n: Minus[T1, T2, T3]
   ): Minus[Number1S[T1], Number2S[T2], T3] = new Minus
-  implicit def number2sImplicitMinus1[T1 <: Number1, T2 <: Number2, T3 <: Number1](implicit
-    n: Minus[T1, T2, T3]
-  ): Minus[Number1T, Number2S[T2], Number1T] = new Minus
+  implicit def number2sImplicitMinus1[T1 <: Number2]: Minus[Number1T, Number2S[T1], Number1T] = new Minus
 }
 
 class Number2T extends Number2
