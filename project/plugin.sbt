@@ -1,0 +1,7 @@
+addSbtPlugin("org.scalameta"         % "sbt-scalafmt"             % "2.4.5")
+addSbtPlugin("com.typesafe.sbt"      % "sbt-twirl"                % "1.5.1")
+addSbtPlugin("io.spray"              % "sbt-revolver"             % "0.9.1")
+addSbtPlugin("org.scala-js"          % "sbt-scalajs"              % "1.8.0")
+addSbtPlugin("com.vmunier"           % "sbt-web-scalajs"          % "1.2.0")
+addSbtPlugin("io.github.davidmweber" % "flyway-sbt"               % "7.4.0")
+addSbtPlugin("org.portable-scala"    % "sbt-scalajs-crossproject" % "1.0.0")
