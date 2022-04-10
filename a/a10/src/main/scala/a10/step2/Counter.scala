@@ -1,10 +1,10 @@
-package a10
+package a10.step2
 
 trait Number1 {
   def method1(number2: Number2): Number2
 }
 case class Number1S(tail: Number1, head: Number2) extends Number1 {
-  override def method1(number2: Number2): Number2 = Number2S(number2, head.method2(tail))
+  override def method1(number2: Number2): Number2 = Number2S(head, number2.method2(tail))
 }
 case object Number1T extends Number1 {
   override def method1(number2: Number2): Number2 = number2
