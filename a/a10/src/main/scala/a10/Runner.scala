@@ -8,7 +8,7 @@ object Runner {
   }
 
   def count2(number: Number2): Int = number match {
-    case Number2S(tail, head) => count2(tail) + count1(head) - 1
+    case Number2S(tail, head) => count2(tail) + count1(head)
     case Number2T             => 0
   }
 
@@ -47,11 +47,10 @@ object Runner {
     val result1 = count2(number3)
     val result2 = count1(number4)
 
-    println(input1)  // 3
-    println(input2)  // -3
-    println(result1) // 0
-    println(result2) // -2
+    assert(input1 == 7)
+    assert(input2 == 1)
     assert(input1 + input2 == result1)
+    assert(input1 + input2 + 1 == result2)
 
     for {
       i <- 1 to 15
@@ -68,51 +67,51 @@ object Runner {
       assert(n1 + n2 == n3)
       println(s"$n1 + $n2 = $n3 ${n3 == n1 + n2}")
 
-// 4 + 0 = 4 true
-// -5 + 9 = 4 true
-// -2 + 5 = 3 true
-// 0 + 4 = 4 true
-// 23 + 12 = 35 true
-// 0 + 18 = 18 true
-// 5 + 0 = 5 true
-// -11 + 7 = -4 true
-// 0 + 0 = 0 true
-// 0 + -5 = -5 true
-// 19 + 48 = 67 true
-// 0 + 6 = 6 true
-// 1 + 25 = 26 true
-// 1 + 0 = 1 true
-// 51 + 0 = 51 true
-// 41 + 102 = 143 true
-// 41 + -2 = 39 true
-// 42 + -91 = -49 true
-// 0 + 0 = 0 true
-// 1 + -5 = -4 true
-// -124 + -3 = -127 true
-// 1 + 11 = 12 true
-// 213 + 158 = 371 true
-// 0 + -93 = -93 true
-// 130 + 21 = 151 true
-// 137 + 20 = 157 true
-// -172 + 0 = -172 true
-// 474 + 304 = 778 true
-// 0 + 0 = 0 true
-// -27 + 416 = 389 true
-// 171 + -437 = -266 true
-// 0 + -456 = -456 true
-// 35 + 513 = 548 true
-// 163 + 657 = 820 true
-// 0 + 508 = 508 true
-// 600 + 162 = 762 true
-// -341 + 0 = -341 true
-// -438 + -941 = -1379 true
-// 0 + -1 = -1 true
-// 0 + 1620 = 1620 true
-// 2138 + 753 = 2891 true
-// 0 + 734 = 734 true
-// 1 + -4813 = -4812 true
-// 1 + -3458 = -3457 true
-// -427 + 0 = -427 true
+//38 + 0 = 38 true
+//0 + 0 = 0 true
+//0 + 264 = 264 true
+//1 + 301 = 302 true
+//97 + 491 = 588 true
+//1 + 0 = 1 true
+//291 + 440 = 731 true
+//161 + 1929 = 2090 true
+//1 + 0 = 1 true
+//478 + 0 = 478 true
+//1026 + 1545 = 2571 true
+//73 + 664 = 737 true
+//412 + 1045 = 1457 true
+//2370 + 1804 = 4174 true
+//3735 + 0 = 3735 true
+//2318 + 0 = 2318 true
+//2404 + 0 = 2404 true
+//110 + 0 = 110 true
+//4817 + 4653 = 9470 true
+//0 + 2727 = 2727 true
+//0 + 9769 = 9769 true
+//6228 + 43097 = 49325 true
+//2 + 0 = 2 true
+//0 + 15387 = 15387 true
+//10325 + 37296 = 47621 true
+//0 + 0 = 0 true
+//0 + 0 = 0 true
+//35577 + 76844 = 112421 true
+//0 + 26505 = 26505 true
+//125240 + 37017 = 162257 true
+//50516 + 76906 = 127422 true
+//0 + 0 = 0 true
+//232847 + 103558 = 336405 true
+//59222 + 422781 = 482003 true
+//179607 + 0 = 179607 true
+//50313 + 128482 = 178795 true
+//254557 + 416730 = 671287 true
+//1 + 1287130 = 1287131 true
+//180805 + 256965 = 437770 true
+//200627 + 1176719 = 1377346 true
+//85058 + 148224 = 233282 true
+//0 + 423756 = 423756 true
+//2043445 + 3650304 = 5693749 true
+//0 + 695185 = 695185 true
+//1834571 + 2100175 = 3934746 true
     }
   }
 
