@@ -2,71 +2,27 @@ package a06
 
 object Runner {
 
-  class PlusImpl[T1 <: Number1, T2 <: Number2] {
-    def apply[T3 <: Number1]()(implicit i: Plus[T1, T2, T3], len: Length[T3]): Int = len.length
-  }
+  def number1Gen(n: Int): Number1 = if (n > 0) Number1S(number1Gen(n - 1)) else Number1T
+  def number2Gen(n: Int): Number2 = if (n > 0) Number2S(number2Gen(n - 1)) else Number2T
 
-  def plus[T1 <: Number1, T2 <: Number2] = new PlusImpl[T1, T2]
+  def count(number: Number2): Int = number match {
+    case Number2S(tail) => count(tail) + 1
+    case Number2T       => 0
+  }
 
   def main(arr: Array[String]): Unit = {
     {
-      val count1  = plus[Number1T, Number2T]()
-      val result1 = 0 + 0
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1T]
-      val count1  = plus[Num1, Number2T]()
-      val result1 = 1 + 0
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1S[Number1T]]
-      val count1  = plus[Num1, Number2T]()
-      val result1 = 2 + 0
-      assert(count1 == result1)
-    }
-
-    {
-      type Num2 = Number2S[Number2T]
-      val count1  = plus[Number1T, Num2]()
-      val result1 = 0 + 1
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1T]
-      type Num2 = Number2S[Number2T]
-      val count1  = plus[Num1, Num2]()
-      val result1 = 1 + 1
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1S[Number1T]]
-      type Num2 = Number2S[Number2T]
-      val count1  = plus[Num1, Num2]()
-      val result1 = 2 + 1
-      assert(count1 == result1)
-    }
-
-    {
-      type Num2 = Number2S[Number2S[Number2T]]
-      val count1  = plus[Number1T, Num2]()
-      val result1 = 0 + 2
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1T]
-      type Num2 = Number2S[Number2S[Number2T]]
-      val count1  = plus[Num1, Num2]()
-      val result1 = 1 + 2
-      assert(count1 == result1)
-    }
-    {
-      type Num1 = Number1S[Number1S[Number1T]]
-      type Num2 = Number2S[Number2S[Number2T]]
-      val count1  = plus[Num1, Num2]()
-      val result1 = 2 + 2
-      assert(count1 == result1)
+      for {
+        i1 <- 0 to 100
+        i2 <- 0 to 100
+      } {
+        val number1 = number1Gen(i1)
+        val number2 = number2Gen(i2)
+        val number3 = number1.method1(number2)
+        val count1  = count(number3)
+        val result1 = i1 + i2
+        assert(count1 == result1)
+      }
     }
   }
 

@@ -1,37 +1,15 @@
 package a06
 
-trait Length[T <: Number1] {
-  def length: Int
+trait Number1 {
+  def method1(number2: Number2): Number2
 }
-
-trait Number1
-
-class Number1S[T <: Number1] extends Number1
-object Number1S {
-  implicit def number1sImplicit[T <: Number1](implicit n: Length[T]): Length[Number1S[T]] = new Length[Number1S[T]] {
-    override def length: Int = n.length + 1
-  }
+case class Number1S(tail: Number1) extends Number1 {
+  override def method1(number2: Number2): Number2 = Number2S(tail.method1(number2))
 }
-
-class Number1T extends Number1
-object Number1T {
-  implicit val number1tImplicit: Length[Number1T] = new Length[Number1T] {
-    override def length: Int = 0
-  }
+case object Number1T extends Number1 {
+  override def method1(number2: Number2): Number2 = number2
 }
-
-class Plus[P1 <: Number1, P2 <: Number2, P3 <: Number1]
 
 trait Number2
-
-class Number2S[T <: Number2] extends Number2
-object Number2S {
-  implicit def number2sImplicit[T1 <: Number1, T2 <: Number2, T3 <: Number1](implicit
-    n: Plus[T1, T2, T3]
-  ): Plus[T1, Number2S[T2], Number1S[T3]] = new Plus
-}
-
-class Number2T extends Number2
-object Number2T {
-  implicit def number2tImplicit[T1 <: Number1]: Plus[T1, Number2T, T1] = new Plus[T1, Number2T, T1]
-}
+case class Number2S(tail: Number2) extends Number2
+case object Number2T               extends Number2

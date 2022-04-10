@@ -2,31 +2,21 @@ package a05
 
 object Runner {
 
-  def count[T <: Number1](implicit i: Length[T]): Int = i.length
+  def number1Gen(n: Int): Number1 = if (n > 0) Number1S(number1Gen(n - 1)) else Number1T
+
+  def count(number: Number1): Int = number match {
+    case Number1S(tail) => count(tail) + 1
+    case Number1T       => 0
+  }
 
   def main(arr: Array[String]): Unit = {
     {
-      type Number1 = Number1S[Number1S[Number1S[Number1T]]]
-      val count1  = count[Number1]
-      val result1 = 3
-      assert(count1 == result1)
-    }
-    {
-      type Number1 = Number1S[Number1S[Number1T]]
-      val count1  = count[Number1]
-      val result1 = 2
-      assert(count1 == result1)
-    }
-    {
-      type Number1 = Number1S[Number1T]
-      val count1  = count[Number1]
-      val result1 = 1
-      assert(count1 == result1)
-    }
-    {
-      val count1  = count[Number1T]
-      val result1 = 0
-      assert(count1 == result1)
+      for (i <- 0 to 100) {
+        val number1 = number1Gen(i)
+        val count1  = count(number1)
+        val result1 = number1.length
+        assert(count1 == result1)
+      }
     }
   }
 
