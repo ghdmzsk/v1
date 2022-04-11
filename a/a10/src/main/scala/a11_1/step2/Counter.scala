@@ -1,4 +1,4 @@
-package a10.step2
+package a11_1.step2
 
 trait Number1 {
   def method1(number2: Number2): Number2

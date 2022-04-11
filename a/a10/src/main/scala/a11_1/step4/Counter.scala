@@ -1,4 +1,4 @@
-package a10.step1
+package a11_1.step4
 
 trait Number1 {
   def method1(number2: Number2): Number2
@@ -14,7 +14,7 @@ trait Number2 {
   def method2(number1: Number1): Number1
 }
 case class Number2S(tail: Number2, head: Number1) extends Number2 {
-  override def method2(number1: Number1): Number1 = Number1S(number1, head.method1(tail))
+  override def method2(number1: Number1): Number1 = Number1S(head, number1.method1(tail))
 }
 case object Number2T extends Number2 {
   override def method2(number1: Number1): Number1 = Number1S(number1, Number2T)

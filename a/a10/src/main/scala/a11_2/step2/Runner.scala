@@ -1,4 +1,4 @@
-package a10.step4
+package a11_2.step2
 
 object Runner {
 
@@ -39,18 +39,15 @@ object Runner {
       Number2S(Number2S(Number2S(Number2T, Number1S(Number1T, Number2S(Number2T, Number1S(Number1T, Number2T)))), Number1T), Number1T)
     )
     val number2 = Number2S(Number2T, Number1S(Number1T, Number2S(Number2S(Number2S(Number2T, Number1T), Number1T), Number1T)))
-    val number3 = number1.method1(number2)
-    val number4 = number2.method2(number1)
+    val number3 = number2.method1(number1)
 
     val input1  = count1(number1)
     val input2  = count2(number2)
     val result1 = count2(number3)
-    val result2 = count1(number4)
 
     assert(input1 == 7)
     assert(input2 == 1)
     assert(input1 + input2 == result1)
-    assert(input1 + input2 + 1 == result2)
 
     for {
       i <- 1 to 15
@@ -58,7 +55,7 @@ object Runner {
     } {
       val num1 = genNumber1(-i)
       val num2 = genNumber2(-i - 1)
-      val num3 = num1.method1(num2)
+      val num3 = num2.method1(num1)
 
       val n1 = count1(num1)
       val n2 = count2(num2)
@@ -67,51 +64,51 @@ object Runner {
       assert(n1 + n2 == n3)
       println(s"$n1 + $n2 = $n3 ${n3 == n1 + n2}")
 
-//38 + 0 = 38 true
-//0 + 0 = 0 true
-//0 + 264 = 264 true
-//1 + 301 = 302 true
-//97 + 491 = 588 true
-//1 + 0 = 1 true
-//291 + 440 = 731 true
-//161 + 1929 = 2090 true
-//1 + 0 = 1 true
-//478 + 0 = 478 true
-//1026 + 1545 = 2571 true
-//73 + 664 = 737 true
-//412 + 1045 = 1457 true
-//2370 + 1804 = 4174 true
-//3735 + 0 = 3735 true
-//2318 + 0 = 2318 true
-//2404 + 0 = 2404 true
-//110 + 0 = 110 true
-//4817 + 4653 = 9470 true
-//0 + 2727 = 2727 true
-//0 + 9769 = 9769 true
-//6228 + 43097 = 49325 true
-//2 + 0 = 2 true
-//0 + 15387 = 15387 true
-//10325 + 37296 = 47621 true
-//0 + 0 = 0 true
-//0 + 0 = 0 true
-//35577 + 76844 = 112421 true
-//0 + 26505 = 26505 true
-//125240 + 37017 = 162257 true
-//50516 + 76906 = 127422 true
-//0 + 0 = 0 true
-//232847 + 103558 = 336405 true
-//59222 + 422781 = 482003 true
-//179607 + 0 = 179607 true
-//50313 + 128482 = 178795 true
-//254557 + 416730 = 671287 true
-//1 + 1287130 = 1287131 true
-//180805 + 256965 = 437770 true
-//200627 + 1176719 = 1377346 true
-//85058 + 148224 = 233282 true
-//0 + 423756 = 423756 true
-//2043445 + 3650304 = 5693749 true
-//0 + 695185 = 695185 true
-//1834571 + 2100175 = 3934746 true
+//107 + 166 = 273 false
+//1 + 0 = 1 false
+//40 + 0 = 40 false
+//96 + 0 = 96 false
+//85 + 629 = 714 false
+//0 + 400 = 400 false
+//254 + 243 = 497 false
+//319 + 865 = 1184 false
+//78 + 629 = 707 false
+//318 + 1817 = 2135 false
+//0 + 0 = 0 false
+//547 + 0 = 547 false
+//2 + 2923 = 2925 false
+//1388 + 4010 = 5398 false
+//844 + 3103 = 3947 false
+//1760 + 0 = 1760 false
+//3850 + 0 = 3850 false
+//5145 + 3818 = 8963 false
+//1993 + 5615 = 7608 false
+//0 + 0 = 0 false
+//0 + 14873 = 14873 false
+//4047 + 29788 = 33835 false
+//16143 + 0 = 16143 false
+//2935 + 24085 = 27020 false
+//12147 + 88473 = 100620 false
+//8004 + 15937 = 23941 false
+//498 + 48685 = 49183 false
+//64026 + 0 = 64026 false
+//62808 + 83814 = 146622 false
+//0 + 59043 = 59043 false
+//73005 + 249335 = 322340 false
+//30431 + 83294 = 113725 false
+//62663 + 67100 = 129763 false
+//0 + 429998 = 429998 false
+//237398 + 538770 = 776168 false
+//159658 + 528589 = 688247 false
+//337924 + 842984 = 1180908 false
+//318255 + 0 = 318255 false
+//151210 + 0 = 151210 false
+//341124 + 335685 = 676809 false
+//0 + 1347852 = 1347852 false
+//2 + 2239593 = 2239595 false
+//428023 + 0 = 428023 false
+//0 + 1112867 = 1112867 false
+//1933089 + 2365072 = 4298161 false
     }
   }
 
