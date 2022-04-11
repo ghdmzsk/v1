@@ -59,12 +59,15 @@ object Runner {
       val num1 = genNumber1(-i)
       val num2 = genNumber2(-i - 1)
       val num3 = num1.method1(num2)
+      val num4 = num2.method2(num1)
 
       val n1 = count1(num1)
       val n2 = count2(num2)
       val n3 = count2(num3)
+      val n4 = count1(num4)
 
       assert(n1 + n2 == n3)
+      assert(n1 + n2 + 1 == n4)
       println(s"$n1 + $n2 = $n3 ${n3 == n1 + n2}")
 
 //38 + 0 = 38 true
