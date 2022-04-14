@@ -1,2 +1,2 @@
 Settings.settings
-name := "a11_1"
+name := "a10"
