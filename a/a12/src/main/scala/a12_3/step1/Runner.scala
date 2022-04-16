@@ -47,7 +47,7 @@ object Runner {
     val result1 = count1(number3)
 
     assert(input1 == 3)
-    assert(input2 == -3)
+    assert(input2 == -2)
     assert(input1 + input2 == result1)
 
     for {

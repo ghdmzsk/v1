@@ -8,7 +8,7 @@ object Runner {
   }
 
   def count2(number: Number2): Int = number match {
-    case Number2S(tail, head) => count2(tail) + count1(head)
+    case Number2S(tail, head) => count2(tail) + count1(head) - 1
     case Number2T             => 0
   }
 
@@ -48,8 +48,8 @@ object Runner {
     val input2  = count2(number2)
     val result1 = count2(number3)
 
-    assert(input1 == 7)
-    assert(input2 == 1)
+    assert(input1 == 2)
+    assert(input2 == -3)
     assert(input1 + input2 == result1)
 
     for {
