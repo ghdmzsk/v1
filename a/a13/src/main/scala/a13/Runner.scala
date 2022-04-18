@@ -1,136 +1,49 @@
 package a13
 
-import scala.reflect.runtime.{universe => ru}
-
-trait N1
-trait N2
-class N3
-trait N4 extends N3 with N1
-trait N5 extends N2
-trait N6 extends N4 with N1
-trait N7 extends N3 with N1 with N2 with N4 with N5
-
 object Runner {
 
-  lazy val numAny: Number1 =
-    Number1S(
-      head1 = () => Number2S(Number2S(Number2S(Number2T, numN1), numN2), numN3),
-      head2 = () => Number3T,
-      instance = implicitly[ru.TypeTag[Any]]
-    )
-  lazy val numN1: Number1 = Number1S(head1 = () => Number2S(Number2T, numN7), head2 = () => Number3T, instance = implicitly[ru.TypeTag[N1]])
-  lazy val numN2: Number1 =
-    Number1S(head1 = () => Number2S(Number2S(Number2T, numN5), numN7), head2 = () => Number3T, instance = implicitly[ru.TypeTag[N2]])
-  lazy val numN3: Number1 =
-    Number1S(head1 = () => Number2S(Number2S(Number2T, numN4), numN7), head2 = () => Number3T, instance = implicitly[ru.TypeTag[N3]])
-  lazy val numN4: Number1 =
-    Number1S(
-      head1 = () => Number2S(Number2S(Number2T, numN6), numN7),
-      head2 = () => Number3S(Number3S(Number3T, numN3), numN1),
-      instance = implicitly[ru.TypeTag[N4]]
-    )
-  lazy val numN5: Number1 =
-    Number1S(head1 = () => Number2S(Number2T, numN7), head2 = () => Number3S(Number3T, numN2), instance = implicitly[ru.TypeTag[N5]])
-  lazy val numN6: Number1 =
-    Number1S(head1 = () => Number2T, head2 = () => Number3S(Number3S(Number3T, numN4), numN1), instance = implicitly[ru.TypeTag[N6]])
-  lazy val numN7: Number1 = Number1S(
-    head1 = () => Number2T,
-    head2 = () => Number3S(Number3S(Number3S(Number3S(Number3S(Number3T, numN3), numN1), numN2), numN4), numN5),
-    instance = implicitly[ru.TypeTag[N7]]
-  )
+  lazy val numAny: Number1 = Number1S(() => Number2S(Number1S(() => Number2S(numN1, Number3T), () => Number3T), Number3T), () => Number3T)
+  lazy val numN1: Number1  = Number1S(() => Number2S(numN7, Number3S(numN4, Number2T)), () => Number3T)
+  lazy val numN2: Number2  = Number2S(Number1S(() => Number2S(numN5, Number3T), () => Number3T), Number3T)
+  lazy val numN3: Number1  = Number1S(() => Number2S(Number1S(() => Number2T, () => Number3T), Number3T), () => Number3T)
+  lazy val numN4: Number1  = Number1S(() => Number2S(numN7, Number3S(Number1T, numN6)), () => Number3T)
+  lazy val numN5: Number1  = Number1S(() => Number2S(numN7, Number3T), () => Number3T)
+  lazy val numN6: Number2  = Number2S(numN7, Number3T)
+  lazy val numN7: Number1 =
+    Number1S(() => Number2T, () => Number3S(Number1T, Number2S(Number1S(() => Number2S(Number1T, Number3T), () => Number3T), Number3T)))
 
-  def printlnNumber1(num1: Number1): Unit = num1 match {
-    case Number1S(head1, head2, instance) =>
-      printlnNumber2(instance, head1())
-      printlnNumber3(instance, head2())
+  case class Count(num1: Int, num2: Int, num3: Int)
+
+  def countNumber1(num1: Number1): Count = num1 match {
+    case Number1S(num2, num3) =>
+      val c1 = countNumber2(num2())
+      val c2 = countNumber3(num3())
+      Count(num1 = c1.num1 + c2.num1 + 1, num2 = c1.num2 + c2.num2, num3 = c1.num3 + c2.num3)
+    case Number1T =>
+      Count(num1 = 0, num2 = 0, num3 = 0)
   }
 
-  def printlnNumber1_3(num1: Number1): Unit = num1 match {
-    case Number1S(_, head2, instance) =>
-      printlnNumber3(instance, head2())
-  }
-
-  def printlnNumber2(instance: ru.TypeTag[_], num2: Number2): Unit = num2 match {
-    case Number2S(tail, head @ Number1S(_, _, instance2)) =>
-      println("v1", instance, instance2, instance2.tpe <:< instance.tpe)
-      assert(instance2.tpe <:< instance.tpe)
-
-      printlnNumber1(head)
-      printlnNumber2(instance, tail)
+  def countNumber2(num2: Number2): Count = num2 match {
+    case Number2S(num1, num3) =>
+      val c1 = countNumber1(num1)
+      val c2 = countNumber3(num3)
+      Count(num1 = c1.num1 + c2.num1, num2 = c1.num2 + c2.num2 + 1, num3 = c1.num3 + c2.num3)
     case Number2T =>
+      Count(num1 = 0, num2 = 0, num3 = 0)
   }
 
-  def printlnNumber3(instance: ru.TypeTag[_], num3: Number3): Unit = num3 match {
-    case Number3S(tail, head @ Number1S(_, _, instance2)) =>
-      println("v2", instance, instance2, instance.tpe <:< instance2.tpe)
-      assert(instance2.tpe <:< instance2.tpe)
-
-      printlnNumber1_3(head)
-      printlnNumber3(instance, tail)
+  def countNumber3(num3: Number3): Count = num3 match {
+    case Number3S(num1, num2) =>
+      val c1 = countNumber1(num1)
+      val c2 = countNumber2(num2)
+      Count(num1 = c1.num1 + c2.num1, num2 = c1.num2 + c2.num2, num3 = c1.num3 + c2.num3 + 1)
     case Number3T =>
+      Count(num1 = 0, num2 = 0, num3 = 0)
   }
 
   def main(arr: Array[String]): Unit = {
-    printlnNumber1(numAny)
+    val n = countNumber1(numAny)
+    println(n)
   }
-
-//(v1,TypeTag[Any],TypeTag[a12.N3],true)
-//(v1,TypeTag[a12.N3],TypeTag[a12.N7],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N5],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N3],true)
-//(v1,TypeTag[a12.N3],TypeTag[a12.N4],true)
-//(v1,TypeTag[a12.N4],TypeTag[a12.N7],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N5],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N3],true)
-//(v1,TypeTag[a12.N4],TypeTag[a12.N6],true)
-//(v2,TypeTag[a12.N6],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N6],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v1,TypeTag[Any],TypeTag[a12.N2],true)
-//(v1,TypeTag[a12.N2],TypeTag[a12.N7],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N5],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N3],true)
-//(v1,TypeTag[a12.N2],TypeTag[a12.N5],true)
-//(v1,TypeTag[a12.N5],TypeTag[a12.N7],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N5],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v1,TypeTag[Any],TypeTag[a12.N1],true)
-//(v1,TypeTag[a12.N1],TypeTag[a12.N7],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N5],true)
-//(v2,TypeTag[a12.N5],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N4],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N4],TypeTag[a12.N3],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N2],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N1],true)
-//(v2,TypeTag[a12.N7],TypeTag[a12.N3],true)
 
 }
