@@ -1,37 +1,40 @@
 package a13
 
 trait Number1 {
-  def method1(num1: Number1): Number1
+  def method1(num2: Number2): Number2
 }
-case class Number1S(tail2: () => Number2, tail3: () => Number3) extends Number1 {
-  override def method1(num1: Number1): Number1 = Number1S(() => tail3().method2(num1), () => tail2().method2(num1))
+case class Number1S(tail3: Number3, tail1: Number1) extends Number1 {
+  override def method1(num2: Number2): Number2 = Number2S(num2.method2(tail3), tail1.method1(num2))
 }
-case object Number1T extends Number1 {
-  override def method1(num1: Number1): Number1 = Number1T
+case class Number1T(tail1: () => Number1) extends Number1 {
+  override def method1(num2: Number2): Number2 = tail1().method1(num2)
+}
+case object Number1U extends Number1 {
+  override def method1(num2: Number2): Number2 = Number2U
 }
 
 trait Number2 {
-  def method2(num1: Number1): Number3
+  def method2(num3: Number3): Number1
 }
-case class Number2S(tail3: Number3, tail1: Number1) extends Number2 {
-  override def method2(num1: Number1): Number3 = Number3S(tail3.method2(num1), tail1.method1(num1))
+case class Number2S(tail1: Number1, tail2: Number2) extends Number2 {
+  override def method2(num3: Number3): Number1 = Number1S(num3.method3(tail1), tail2.method2(num3))
 }
 case class Number2T(tail2: () => Number2) extends Number2 {
-  override def method2(num1: Number1): Number3 = tail2().method2(num1)
+  override def method2(num3: Number3): Number1 = tail2().method2(num3)
 }
 case object Number2U extends Number2 {
-  override def method2(num1: Number1): Number3 = Number3U
+  override def method2(num3: Number3): Number1 = Number1U
 }
 
 trait Number3 {
-  def method2(num1: Number1): Number2
+  def method3(num1: Number1): Number3
 }
-case class Number3S(tail2: Number2, tail1: Number1) extends Number3 {
-  override def method2(num1: Number1): Number2 = Number2S(tail2.method2(num1), tail1.method1(num1))
+case class Number3S(tail1: Number2, tail3: Number3) extends Number3 {
+  override def method3(num1: Number1): Number3 = Number3S(num1.method1(tail1), tail3.method3(num1))
 }
 case class Number3T(tail3: () => Number3) extends Number3 {
-  override def method2(num1: Number1): Number2 = tail3().method2(num1)
+  override def method3(num1: Number1): Number3 = tail3().method3(num1)
 }
 case object Number3U extends Number3 {
-  override def method2(num1: Number1): Number2 = Number2U
+  override def method3(num1: Number1): Number3 = Number3U
 }
