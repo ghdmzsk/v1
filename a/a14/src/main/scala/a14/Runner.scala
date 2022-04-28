@@ -2,7 +2,7 @@ package a14
 
 import scala.util.Random
 
-object Runner1 {
+object Runner {
 
   def randomGen: Int = math.abs(Random.nextInt() % 10)
 
