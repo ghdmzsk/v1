@@ -8,7 +8,7 @@ object Runner {
 
   def genNumber1_1(n: Int, deep: Int): Number1_1 = {
     if (deep > 0 && n > 0)
-      Number1_1S(genNumber1_1(randomGen, deep - 1), genNumber1_2(n - 1, deep))
+      Number1_1S(genNumber1_2(randomGen, deep - 1))
     else
       Number1_1T
   }
@@ -23,8 +23,8 @@ object Runner {
   def genNumber2(n: Int, zero: => Number2): Number2 = if (n > 0) Number2S(genNumber2(n - 1, zero)) else zero
 
   def countNumber1_1(num1_1: Number1_1): Int = num1_1 match {
-    case Number1_1S(tail1, tail2) => countNumber1_1(tail1) + countNumber1_2(tail2) + 1
-    case Number1_1T               => 0
+    case Number1_1S(tail) => countNumber1_2(tail) + 1
+    case Number1_1T       => 0
   }
 
   def countNumber1_2(num1_2: Number1_2): Int = num1_2 match {
@@ -38,14 +38,14 @@ object Runner {
   }
 
   def countNumber3_1(num1: Number3_1): Int = num1 match {
-    case Number3_1S(tail1, tail2) => countNumber3_1(tail1) + countNumber3_2(tail2) + 1
-    case Number3_1U(tail1, tail2) => countNumber3_1(tail1) + countNumber3_2(tail2)
-    case Number3_1T               => 0
+    case Number3_1S(tail) => countNumber3_2(tail) + 1
+    case Number3_1T       => 0
   }
 
   def countNumber3_2(num2: Number3_2): Int = num2 match {
-    case Number3_2S(tail2, tail1) => countNumber3_1(tail1) + countNumber3_2(tail2)
-    case Number3_2T               => 0
+    case Number3_2S(tail2_1, tail12_2) => countNumber3_2(tail2_1) + countNumber3_2(tail12_2)
+    case Number3_2T(tail)              => countNumber3_1(tail)
+    case Number3_2U                    => 0
   }
 
   def main(arr: Array[String]): Unit = {
