@@ -34,7 +34,6 @@ case class Number2T(tail: () => Number2) extends Number2 {
 // ====
 trait Number3_1
 case class Number3_1S(tail: Number3_2) extends Number3_1
-case object Number3_1T                 extends Number3_1
 
 trait Number3_2
 case class Number3_2S(tail2_1: Number3_2, tail2_2: Number3_2) extends Number3_2

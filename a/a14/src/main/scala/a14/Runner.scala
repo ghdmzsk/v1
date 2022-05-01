@@ -39,7 +39,6 @@ object Runner {
 
   def countNumber3_1(num1: Number3_1): Int = num1 match {
     case Number3_1S(tail) => countNumber3_2(tail) + 1
-    case Number3_1T       => 0
   }
 
   def countNumber3_2(num2: Number3_2): Int = num2 match {
