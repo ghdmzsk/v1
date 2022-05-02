@@ -49,8 +49,8 @@ object Runner {
 
     assert(input1 == 3)
     assert(input2 == -3)
-    assert(input1 + input2 == result1)
-    assert(input1 + input2 + 2 == result2)
+    assert(input1 + input2 - 1 == result1)
+    assert(input1 + input2 + 1 == result2)
 
     for {
       i <- 1 to 15
@@ -66,9 +66,9 @@ object Runner {
       val n3 = count2(num3)
       val n4 = count1(num4)
 
-      assert(n1 + n2 == n3)
-      assert(n1 + n2 + 2 == n4)
-      println(s"$n1 + $n2 = $n3 ${n3 == n1 + n2}")
+      assert(n1 + n2 - 1 == n3)
+      assert(n1 + n2 + 1 == n4)
+      println(s"$n1 + $n2 = ${(n3 + n4) / 2} ${n3 + n4 == (n1 + n2) * 2}")
 
 //38 + 0 = 38 true
 //0 + 0 = 0 true

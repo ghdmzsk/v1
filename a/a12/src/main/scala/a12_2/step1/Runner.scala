@@ -39,15 +39,18 @@ object Runner {
       Number2S(Number2S(Number2S(Number2T, Number1S(Number1T, Number2S(Number2T, Number1S(Number1T, Number2T)))), Number1T), Number1T)
     )
     val number2 = Number2S(Number2T, Number1S(Number1T, Number2S(Number2S(Number2S(Number2T, Number1T), Number1T), Number1T)))
-    val number3 = number2.method1(number1)
+    val number3 = number2.method2(number1)
+    val number4 = number1.method1(number2)
 
     val input1  = count1(number1)
     val input2  = count2(number2)
     val result1 = count2(number3)
+    val result2 = count1(number4)
 
     assert(input1 == 3)
     assert(input2 == -3)
-    assert(input1 + input2 == result1)
+    assert(input1 + input2 - 1 == result1)
+    assert(input1 + input2 + 1 == result2)
 
     for {
       i <- 1 to 15
@@ -55,14 +58,17 @@ object Runner {
     } {
       val num1 = genNumber1(-i)
       val num2 = genNumber2(-i - 1)
-      val num3 = num2.method1(num1)
+      val num3 = num2.method2(num1)
+      val num4 = num1.method1(num2)
 
       val n1 = count1(num1)
       val n2 = count2(num2)
       val n3 = count2(num3)
+      val n4 = count1(num4)
 
-      assert(n1 + n2 == n3)
-      println(s"$n1 + $n2 = $n3 ${n3 == n1 + n2}")
+      assert(n1 + n2 - 1 == n3)
+      assert(n1 + n2 + 1 == n4)
+      println(s"$n1 + $n2 = ${(n3 + n4) / 2} ${n3 + n4 == (n1 + n2) * 2}")
 
 //107 + 166 = 273 false
 //1 + 0 = 1 false
