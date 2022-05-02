@@ -1,14 +1,21 @@
 package a15
 
 import scala.util.Random
+import zio._
+import zio.logging._
 
 object Runner {
+
+  val loggingEnv: URLayer[ZEnv, Logging] =
+    Logging.console(logLevel = LogLevel.Info, format = LogFormat.ColoredLogFormat()) >>> Logging.withRootLoggerName("乘法")
+
+  def info(str: String): Unit = Runtime.default.unsafeRun(log.info(str).provideLayer(loggingEnv))
 
   def randomGen: Int = math.abs(Random.nextInt() % 10)
 
   def genNumber1_1(n: Int, deep: Int): Number1_1 = {
     if (deep > 0 && n > 0)
-      Number1_1S(genNumber1_2(randomGen, deep - 1))
+      Number1_1S(genNumber1_1(randomGen, deep - 1), genNumber1_2(randomGen, deep - 1))
     else
       Number1_1T
   }
@@ -20,11 +27,15 @@ object Runner {
       Number1_2T
   }
 
-  def genNumber2(n: Int, zero: => Number2): Number2 = if (n > 0) Number2S(genNumber2(n - 1, zero)) else zero
+  def genNumber2_1(n: Int, tail2: => Number2_2, zero: => Number2_1): Number2_1 =
+    Number2_1S(if (n > 0) genNumber2_1Impl(n - 1, zero) else zero, tail2)
+  def genNumber2_1Impl(n: Int, zero: => Number2_1): Number2_1 = if (n > 0) Number2_1T(genNumber2_1Impl(n - 1, zero)) else zero
+
+  def genNumber2_2(n: Int, zero: => Number2_2): Number2_2 = if (n > 0) Number2_2S(genNumber2_2(n - 1, zero)) else zero
 
   def countNumber1_1(num1_1: Number1_1): Int = num1_1 match {
-    case Number1_1S(tail) => countNumber1_2(tail) + 1
-    case Number1_1T       => 0
+    case Number1_1S(tail1, tail2) => countNumber1_1(tail1) + countNumber1_2(tail2) + 1
+    case Number1_1T               => 0
   }
 
   def countNumber1_2(num1_2: Number1_2): Int = num1_2 match {
@@ -32,37 +43,72 @@ object Runner {
     case Number1_2T               => 0
   }
 
-  def countNumber2(num2: Number2): Int = num2 match {
-    case Number2S(tail) => countNumber2(tail) + 1
-    case Number2T(_)    => 0
+  def countNumber2_1(num2: Number2_1): Int = num2 match {
+    case Number2_1S(tail1, tail2) => countNumber2_1(tail1) + countNumber2_2(tail2) + 1
+    case Number2_1T(tail)         => countNumber2_1(tail) + 1
+    case Number2_1U(_)            => 0
+  }
+
+  def countNumber2_2(num2: Number2_2): Int = num2 match {
+    case Number2_2S(tail1) => countNumber2_2(tail1) - 1
+    case Number2_2T(_)     => 0
   }
 
   def countNumber3_1(num1: Number3_1): Int = num1 match {
-    case Number3_1S(tail) => countNumber3_2(tail) + 1
+    case Number3_1S(tail) => countNumber3_2(tail) - 1
+    case Number3_1T(tail) => countNumber3_1(tail) - 1
+    case Number3_1U       => 0
   }
 
   def countNumber3_2(num2: Number3_2): Int = num2 match {
-    case Number3_2S(tail2_1, tail12_2) => countNumber3_2(tail2_1) + countNumber3_2(tail12_2)
-    case Number3_2T(tail)              => countNumber3_1(tail)
-    case Number3_2U                    => 0
+    case Number3_2T(tail2, tail1) => countNumber3_2(tail2) + countNumber3_1(tail1) + 1
+    case Number3_2U(tail)         => countNumber3_2(tail) + 1
+    case Number3_2W               => 0
   }
 
   def main(arr: Array[String]): Unit = {
+
+    var i = 0
 
     for {
       i1 <- 1 to 20
       i2 <- 1 to 5
       i3 <- 1 to 10
+      i4 <- 1 to 10
     } {
-      val num1: Number1_2        = genNumber1_2(i1, i2)
-      lazy val num2: Number2     = genNumber2(i3, num2Zero)
-      lazy val num2Zero: Number2 = Number2T(() => num2)
-      val numCount               = num1.method2(num2)
-      val count1                 = countNumber1_2(num1)
-      val count2                 = countNumber2(num2)
-      val count3                 = countNumber3_2(numCount)
-      println(count1, count2, count3, count1 * count2)
-      assert(count1 * count2 == count3)
+      val num1: Number1_1            = genNumber1_1(i1, i2)
+      lazy val num2_1: Number2_1     = genNumber2_1(i3, num2_2, num2_1Zero)
+      lazy val num2_1Zero: Number2_1 = Number2_1U(() => num2_1)
+      lazy val num2_2: Number2_2     = genNumber2_2(i4, num2_2Zero)
+      lazy val num2_2Zero: Number2_2 = Number2_2T(() => num2_1)
+      val numCount1                  = num2_2Zero.method3(num1) // tick
+      val numCount2                  = num1.method1(num2_1)     // tick
+      // val numCount3                  = num1.method1(num2_1Zero)
+      // val numCount4                  = num2_2.method3(num1)
+      val count1   = countNumber1_1(num1)
+      val count2_1 = countNumber2_1(num2_1)
+      val count3   = countNumber3_1(numCount1)
+      val count4   = countNumber3_1(numCount2)
+      // val count5                     = countNumber3_1(numCount3)
+      // val count6                     = countNumber3_1(numCount4)
+      if (i < 500) {
+        info(s"抽象一，情况一与结果预期差：${count3 - count1 * count2_1}") // -1
+        info(s"抽象一，情况二与结果预期差：${count4 - count1 * count2_1}") // -1
+        // info(s"情况三与结果预期差：${count5 - count1 * count2_1}")
+        // info(s"情况四与结果预期差：${count6 - count1 * count2_1}")
+      }
+
+      val num2: Number1_2 = genNumber1_2(i1, i2)
+      val numCount5       = num2.method2(num2_1) // tick
+      // val numCount6       = num2.method2(num2_1Zero)
+      val count7 = countNumber1_2(num2)
+      val count8 = countNumber3_2(numCount5)
+      // val count9          = countNumber3_2(numCount6)
+      if (i < 500) {
+        info(s"抽象二，情况一与结果预期差：${count8 - count7 * count2_1}") // 1
+        // info(s"情况六与结果预期差：${count9 - count7 * count2_1}")
+      }
+      i += 1
     }
 
   }
