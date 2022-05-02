@@ -1,4 +1,5 @@
 Settings.settings
-name := "a14"
+name := "a15"
 
-libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
+javaOptions += "-Xss10m"
+run / fork := true
