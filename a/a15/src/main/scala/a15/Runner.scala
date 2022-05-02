@@ -81,33 +81,30 @@ object Runner {
       lazy val num2_1Zero: Number2_1 = Number2_1U(() => num2_1)
       lazy val num2_2: Number2_2     = genNumber2_2(i4, num2_2Zero)
       lazy val num2_2Zero: Number2_2 = Number2_2T(() => num2_1)
-      val numCount1                  = num2_2Zero.method3(num1) // tick
-      val numCount2                  = num1.method1(num2_1)     // tick
-      // val numCount3                  = num1.method1(num2_1Zero)
-      // val numCount4                  = num2_2.method3(num1)
-      val count1   = countNumber1_1(num1)
-      val count2_1 = countNumber2_1(num2_1)
-      val count3   = countNumber3_1(numCount1)
-      val count4   = countNumber3_1(numCount2)
-      // val count5                     = countNumber3_1(numCount3)
-      // val count6                     = countNumber3_1(numCount4)
+
+      val numCount1 = num2_2Zero.method3(num1)
+      val numCount2 = num1.method1(num2_1)
+      val count1    = countNumber1_1(num1)
+      val count2_1  = countNumber2_1(num2_1)
+      val count3    = countNumber3_1(numCount1)
+      val count4    = countNumber3_1(numCount2)
       if (i < 500) {
+        info(s"$count1 * $count2_1 = $count3, $count4, ${count1 * count2_1}")
         info(s"抽象一，情况一与结果预期差：${count3 - count1 * count2_1}") // -1
         info(s"抽象一，情况二与结果预期差：${count4 - count1 * count2_1}") // -1
-        // info(s"情况三与结果预期差：${count5 - count1 * count2_1}")
-        // info(s"情况四与结果预期差：${count6 - count1 * count2_1}")
       }
+      assert(count3 - count1 * count2_1 == -1)
+      assert(count4 - count1 * count2_1 == -1)
 
       val num2: Number1_2 = genNumber1_2(i1, i2)
-      val numCount5       = num2.method2(num2_1) // tick
-      // val numCount6       = num2.method2(num2_1Zero)
-      val count7 = countNumber1_2(num2)
-      val count8 = countNumber3_2(numCount5)
-      // val count9          = countNumber3_2(numCount6)
+      val numCount5       = num2.method2(num2_1)
+      val count7          = countNumber1_2(num2)
+      val count8          = countNumber3_2(numCount5)
       if (i < 500) {
+        info(s"$count7 * $count2_1 = $count8, ${count7 * count2_1}")
         info(s"抽象二，情况一与结果预期差：${count8 - count7 * count2_1}") // 1
-        // info(s"情况六与结果预期差：${count9 - count7 * count2_1}")
       }
+      assert(count8 - count7 * count2_1 == 1)
       i += 1
     }
 
