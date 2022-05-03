@@ -33,37 +33,57 @@ object Runner {
 
   def genNumber2_2(n: Int, zero: => Number2_2): Number2_2 = if (n > 0) Number2_2S(genNumber2_2(n - 1, zero)) else zero
 
-  def countNumber1_1(num1_1: Number1_1): Int = num1_1 match {
-    case Number1_1S(tail1, tail2) => countNumber1_1(tail1) + countNumber1_2(tail2) + 1
-    case Number1_1T               => 0
+  object paramCount1 {
+    def count1(num1_1: Number1_1): Int = num1_1 match {
+      case Number1_1S(tail1, tail2) => count1(tail1) + count2(tail2) + 1
+      case Number1_1T               => 0
+    }
+
+    def count2(num1_2: Number1_2): Int = num1_2 match {
+      case Number1_2S(tail2, tail1) => count1(tail1) + count2(tail2)
+      case Number1_2T               => 0
+    }
   }
 
-  def countNumber1_2(num1_2: Number1_2): Int = num1_2 match {
-    case Number1_2S(tail2, tail1) => countNumber1_1(tail1) + countNumber1_2(tail2)
-    case Number1_2T               => 0
+  object paramCount2 {
+    def count1(num2: Number2_1): Int = num2 match {
+      case Number2_1S(tail1, tail2) => count1(tail1) + count2(tail2) + 1
+      case Number2_1T(tail)         => count1(tail) + 1
+      case Number2_1U(_)            => 0
+    }
+
+    def count2(num2: Number2_2): Int = num2 match {
+      case Number2_2S(tail1) => count2(tail1) - 1
+      case Number2_2T(_)     => 0
+    }
   }
 
-  def countNumber2_1(num2: Number2_1): Int = num2 match {
-    case Number2_1S(tail1, tail2) => countNumber2_1(tail1) + countNumber2_2(tail2) + 1
-    case Number2_1T(tail)         => countNumber2_1(tail) + 1
-    case Number2_1U(_)            => 0
+  object resultCount1 {
+    def count1(num1: Number3_1): Int = num1 match {
+      case Number3_1S(tail) => count2(tail) - 1
+      case Number3_1T(tail) => count1(tail) - 1
+      case Number3_1U       => 0
+    }
+
+    def count2(num2: Number3_2): Int = num2 match {
+      case Number3_2T(tail2, tail1) => count2(tail2) + count1(tail1) + 1
+      case Number3_2U(tail)         => count2(tail) + 1
+      case Number3_2W               => 0
+    }
   }
 
-  def countNumber2_2(num2: Number2_2): Int = num2 match {
-    case Number2_2S(tail1) => countNumber2_2(tail1) - 1
-    case Number2_2T(_)     => 0
-  }
+  object resultCount2 {
+    def count1(num1: Number3_1): Int = num1 match {
+      case Number3_1S(tail) => count2(tail) - 1
+      case Number3_1T(tail) => count1(tail) - 1
+      case Number3_1U       => 0
+    }
 
-  def countNumber3_1(num1: Number3_1): Int = num1 match {
-    case Number3_1S(tail) => countNumber3_2(tail) - 1
-    case Number3_1T(tail) => countNumber3_1(tail) - 1
-    case Number3_1U       => 0
-  }
-
-  def countNumber3_2(num2: Number3_2): Int = num2 match {
-    case Number3_2T(tail2, tail1) => countNumber3_2(tail2) + countNumber3_1(tail1) + 1
-    case Number3_2U(tail)         => countNumber3_2(tail) + 1
-    case Number3_2W               => 0
+    def count2(num2: Number3_2): Int = num2 match {
+      case Number3_2T(tail2, tail1) => count2(tail2) + count1(tail1) + 1
+      case Number3_2U(tail)         => count2(tail) + 1
+      case Number3_2W               => 0
+    }
   }
 
   def main(arr: Array[String]): Unit = {
@@ -84,10 +104,10 @@ object Runner {
 
       val numCount1 = num2_2Zero.method3(num1)
       val numCount2 = num1.method1(num2_1)
-      val count1    = countNumber1_1(num1)
-      val count2_1  = countNumber2_1(num2_1)
-      val count3    = countNumber3_1(numCount1)
-      val count4    = countNumber3_1(numCount2)
+      val count1    = paramCount1.count1(num1)
+      val count2_1  = paramCount2.count1(num2_1)
+      val count3    = resultCount1.count1(numCount1)
+      val count4    = resultCount1.count1(numCount2)
       if (i < 500) {
         info(s"$count1 * $count2_1 = $count3, $count4, ${count1 * count2_1}")
         info(s"抽象一，情况一与结果预期差：${count3 - count1 * count2_1}") // -1
@@ -98,8 +118,8 @@ object Runner {
 
       val num2: Number1_2 = genNumber1_2(i1, i2)
       val numCount5       = num2.method2(num2_1)
-      val count7          = countNumber1_2(num2)
-      val count8          = countNumber3_2(numCount5)
+      val count7          = paramCount1.count2(num2)
+      val count8          = resultCount2.count2(numCount5)
       if (i < 500) {
         info(s"$count7 * $count2_1 = $count8, ${count7 * count2_1}")
         info(s"抽象二，情况一与结果预期差：${count8 - count7 * count2_1}") // 1
