@@ -14,27 +14,23 @@ object Runner {
     }
   }
 
-  object resultCount1 {
-    private def count1(number: Number1): Int = number match {
-      case Number1S(tail, head) => count1(tail) + count2(head) + 1
-      case Number1T             => 0
+  case class Num(i1: Int, i2: Int)
+
+  object resultCount {
+    def count1(number: Number1): Num = number match {
+      case Number1S(tail, head) =>
+        val m1 = count1(tail)
+        val m2 = count2(head)
+        Num(i1 = m1.i1 + m2.i1 + 1, i2 = m1.i2 + m2.i2)
+      case Number1T => Num(i1 = 0, i2 = 0)
     }
 
-    def count2(number: Number2): Int = number match {
-      case Number2S(tail, head) => count2(tail) + count1(head)
-      case Number2T             => 0
-    }
-  }
-
-  object resultCount2 {
-    def count1(number: Number1): Int = number match {
-      case Number1S(tail, head) => count1(tail) + count2(head)
-      case Number1T             => 0
-    }
-
-    private def count2(number: Number2): Int = number match {
-      case Number2S(tail, head) => count2(tail) + count1(head) - 1
-      case Number2T             => 0
+    def count2(number: Number2): Num = number match {
+      case Number2S(tail, head) =>
+        val m1 = count2(tail)
+        val m2 = count1(head)
+        Num(i1 = m1.i1 + m2.i1, i2 = m1.i2 + m2.i2 + 1)
+      case Number2T => Num(i1 = 0, i2 = 0)
     }
   }
 
@@ -70,12 +66,13 @@ object Runner {
 
     val input1  = paramCount.count1(number1)
     val input2  = paramCount.count2(number2)
-    val result1 = resultCount1.count2(number3)
-    val result2 = resultCount2.count1(number4)
+    val result1 = resultCount.count2(number3)
+    val result2 = resultCount.count1(number4)
 
     assert(input1 == 3)
     assert(input2 == -3)
-    assert(input1 + input2 == result1 + result2)
+    assert(input1 + input2 == result1.i1 - result2.i2)
+    assert(input1 + input2 == result2.i1 - result1.i2)
 
     for {
       i <- 1 to 15
@@ -88,11 +85,12 @@ object Runner {
 
       val n1 = paramCount.count1(num1)
       val n2 = paramCount.count2(num2)
-      val n3 = resultCount1.count2(num3)
-      val n4 = resultCount2.count1(num4)
+      val n3 = resultCount.count2(num3)
+      val n4 = resultCount.count1(num4)
 
-      assert(n1 + n2 == n3 + n4)
-      println(s"$n1 + $n2 =  ${n3 + n4} ${n3 + n4 == n1 + n2}")
+      assert(n1 + n2 == n3.i1 - n4.i2)
+      assert(n1 + n2 == n4.i1 - n3.i2)
+      println(s"$n1 + $n2 = ${n3.i1 - n4.i2} ${n3.i1 - n4.i2 == n1 + n2}")
 
 //38 + 0 = 38 true
 //0 + 0 = 0 true
