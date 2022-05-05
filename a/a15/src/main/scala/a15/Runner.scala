@@ -147,6 +147,8 @@ object Runner {
       val count7 = resultCount.count2(numCount7)
       val count8 = resultCount.count1(numCount8)
 
+      val count9 = count1_1.i1 * (count2_1.i1 - count2_1.i2)
+
       assert(count1_1.i1 == count1_2.i1)
       assert(count1_1.i1 == i1)
       assert(count2_1.i1 == i3)
@@ -157,7 +159,7 @@ object Runner {
       info(s"$count1_1 * ${count2_1.i1 - count2_1.i2} = ${count1_1.i1 * (count2_1.i1 - count2_1.i2)}")
       info(s"自然数乘法同构准确结果：$count3 $count4 $count5")
       info(s"自然数乘法同构其它结果：$count6 $count7 $count8")
-      assert(count1_1.i1 * (count2_1.i1 - count2_1.i2) * 2 == count3.i1 + count5.i1 - count3.i2 - count5.i2)
+      assert(count9 * 2 == count3.i1 + count5.i1 - count3.i2 - count5.i2)
     }
 
   }
