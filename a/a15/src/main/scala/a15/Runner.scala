@@ -159,7 +159,13 @@ object Runner {
       info(s"$count1_1 * ${count2_1.i1 - count2_1.i2} = ${count1_1.i1 * (count2_1.i1 - count2_1.i2)}")
       info(s"自然数乘法同构准确结果：$count3 $count4 $count5")
       info(s"自然数乘法同构其它结果：$count6 $count7 $count8")
+
       assert(count9 * 2 == count3.i1 + count5.i1 - count3.i2 - count5.i2)
+
+      val assert1 = count9 == count3.i1 - count3.i2 + 1
+      val assert2 = count9 == count5.i1 - count5.i2 - 1
+
+      assert(assert1 && assert2)
     }
 
   }

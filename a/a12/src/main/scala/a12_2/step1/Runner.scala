@@ -55,7 +55,7 @@ object Runner {
     }
   }
 
-  def main(arr: Array[String]): Unit = {
+  def main(): Unit = {
     val number1 = Number1S(
       Number1S(Number1S(Number1S(Number1S(Number1T, Number2T), Number2T), Number2T), Number2T),
       Number2S(Number2S(Number2S(Number2T, Number1S(Number1T, Number2S(Number2T, Number1S(Number1T, Number2T)))), Number1T), Number1T)
@@ -71,8 +71,11 @@ object Runner {
 
     assert(input1 == 3)
     assert(input2 == -3)
+    assert(input1 + input2 == result1.i1 - result1.i2 + 1)
+    assert(input1 + input2 == result2.i1 - result2.i2 - 1)
     assert(input1 + input2 == result1.i1 - result2.i2)
     assert(input1 + input2 == result2.i1 - result1.i2)
+    assert((input1 + input2) * 2 == result1.i1 + result2.i1 - result1.i2 - result2.i2)
 
     for {
       i <- 1 to 15
@@ -88,8 +91,11 @@ object Runner {
       val n3 = resultCount.count2(num3)
       val n4 = resultCount.count1(num4)
 
+      assert(n1 + n2 == n3.i1 - n3.i2 + 1)
+      assert(n1 + n2 == n4.i1 - n4.i2 - 1)
       assert(n1 + n2 == n3.i1 - n4.i2)
       assert(n1 + n2 == n4.i1 - n3.i2)
+      assert((n1 + n2) * 2 == n3.i1 + n4.i1 - n3.i2 - n4.i2)
       println(s"$n1 + $n2 = ${n3.i1 - n4.i2} ${n3.i1 - n4.i2 == n1 + n2}")
 
 //107 + 166 = 273 false
