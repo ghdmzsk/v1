@@ -23,18 +23,8 @@ object Runner {
         i1 <- 0 to 100
         i2 <- 0 to 100
       } {
-        val countNum1 = {
-          val number1 = number1Gen1(i1)
-          val number2 = number2Gen(i2)
-          val number3 = number1.method1(number2)
-          val count1  = count(number3)
-          val result1 = i1 + i2 + 1
-          assert(count1 == result1)
-          count1
-        }
-
         if (i2 > 0) {
-          val countNum2 = {
+          val countNum1 = {
             val number1 = number1Gen1(i1)
             val number2 = number2Gen(i2)
             val number3 = number2.method2(number1)
@@ -44,7 +34,17 @@ object Runner {
             count1
           }
 
-          assert(countNum1 == countNum2 + 1)
+          assert(countNum1 == countNum2 - 1)
+        }
+
+        lazy val countNum2 = {
+          val number1 = number1Gen1(i1)
+          val number2 = number2Gen(i2)
+          val number3 = number1.method1(number2)
+          val count1  = count(number3)
+          val result1 = i1 + i2 + 1
+          assert(count1 == result1)
+          count1
         }
       }
     }
@@ -56,16 +56,6 @@ object Runner {
         i2 <- 0 to 100
       } {
         val countNum1 = {
-          val number1 = number1Gen3(i1)
-          val number2 = number2Gen(i2)
-          val number3 = number1.method1(number2)
-          val count1  = count(number3)
-          val result1 = if (i2 - i1 + 1 > 0) i2 - i1 + 1 else 0
-          assert(count1 == result1)
-          count1
-        }
-
-        val countNum2 = {
           val number1 = number1Gen4(i1)
           val number2 = number2Gen(i2)
           val number3 = number2.method2(number1)
@@ -75,8 +65,18 @@ object Runner {
           count1
         }
 
+        val countNum2 = {
+          val number1 = number1Gen3(i1)
+          val number2 = number2Gen(i2)
+          val number3 = number1.method1(number2)
+          val count1  = count(number3)
+          val result1 = if (i2 - i1 + 1 > 0) i2 - i1 + 1 else 0
+          assert(count1 == result1)
+          count1
+        }
+
         if (i2 - i1 >= 0)
-          assert(countNum1 == countNum2 + 1)
+          assert(countNum1 == countNum2 - 1)
         else
           assert(countNum1 == countNum2)
       }
@@ -121,9 +121,6 @@ object Runner {
           count1
         }
 
-        assert(countNum1 == countNum2)
-        assert(countNum1 + i1 == countNum3)
-
         if (i2 > 0) {
           val countNum4 = {
             lazy val number1s: Number1 = number1Gen5(i1, number1t)
@@ -138,6 +135,9 @@ object Runner {
 
           assert(countNum1 == countNum4 + i1)
         }
+
+        assert(countNum1 == countNum2)
+        assert(countNum1 == countNum3 - i1)
       }
     }
 
@@ -183,8 +183,6 @@ object Runner {
           count1
         }
 
-        assert(countNum1 == countNum2 + 1)
-
         if (i2 > 0) {
           val countNum4 = {
             lazy val number1s: Number1 = number1Gen6(i1, number1t)
@@ -199,6 +197,8 @@ object Runner {
 
           assert(countNum3 == countNum4 + 1)
         }
+
+        assert(countNum2 == countNum1 - 1)
       }
     }
   }
