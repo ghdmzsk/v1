@@ -12,3 +12,6 @@ val a06 = project in aRoot / "a06"
 
 val bRoot = rootFile / "b"
 val b01   = project in bRoot / "b01"
+
+val cRoot = rootFile / "c"
+val c01   = project in cRoot / "c01"
