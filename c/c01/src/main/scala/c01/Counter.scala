@@ -2,14 +2,14 @@ package c01
 
 import scala.annotation.tailrec
 
-trait Number1 {
-  var tail: Number1
-}
+class Number1Context {
 
-class Number1Context(var num1: Number1, var cursor: Int, var zero: Number1) {
+  var num1: Number1 = null
+  var cursor: Int   = 0
+  var zero: Number1 = null
 
   private def getPreCurrent: Number1 = {
-    if(num1 == null){
+    if (num1 == null) {
       null
     } else {
       @tailrec
@@ -19,7 +19,7 @@ class Number1Context(var num1: Number1, var cursor: Int, var zero: Number1) {
   }
 
   private def getCurrent: Number1 = {
-    if(num1 == null) {
+    if (num1 == null) {
       null
     } else {
       @tailrec
@@ -30,7 +30,10 @@ class Number1Context(var num1: Number1, var cursor: Int, var zero: Number1) {
 
   private def dropCurrent: Unit = {
     val preCurrent = getPreCurrent
-    if(preCurrent.tail == null) {
+    if (zero == null) {
+      return
+    }
+    if (preCurrent.tail == null) {
       zero = null
     }
     if (preCurrent == num1) {
@@ -40,7 +43,7 @@ class Number1Context(var num1: Number1, var cursor: Int, var zero: Number1) {
     }
   }
 
-  private def append(number1: Number1): Unit = {
+  protected def append(number1: Number1): Unit = {
     if (zero == null) {
       num1 = number1
       zero = number1
@@ -51,26 +54,43 @@ class Number1Context(var num1: Number1, var cursor: Int, var zero: Number1) {
   }
 
   private def ignore: Unit = {
-    if(zero != null) {
+    if (zero != null) {
       cursor += 1
     }
   }
 
-  class Number1S(override var tail: Number1) extends Number1 {
-    def method1(num2: Number2): Unit = {
+  trait Number1 {
+    var tail: Number1 = null
+    def method1(num2: Number2): Unit
+  }
 
+  class Number1S extends Number1 {
+    override def method1(num2: Number2): Unit = {
+      dropCurrent
+      num2.method2
     }
   }
 
-}
+  class Number1T extends Number1 {
+    override def method1(num2: Number2): Unit = {
+      dropCurrent
+      append(new Number1T)
+    }
+  }
 
-trait Number2 {
-  def method2(num1: Number1): Unit
-}
+  trait Number2 {
+    def method2: Unit
+  }
+  case class Number2S(tail: Number2) extends Number2 {
+    def method2: Unit = {
+      append(new Number1S)
+      tail.method2
+    }
+  }
+  case class Number2T(tail: () => Number2) extends Number2 {
+    def method2: Unit = {
+      num1.method1(tail())
+    }
+  }
 
-case class Number2S(tail: Number2) extends Number2 {
-  def method2(num1: Number1, context: Number1Context): Unit
-}
-case class Number2T(tail: () => Number2) extends Number2 {
-  def method2(num1: Number1, context: Number1Context): Unit
 }
