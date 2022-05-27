@@ -19,7 +19,7 @@ trait Number2 {
 case class Number2S(tail: Number2) extends Number2 {
   override def method2(number1: Number1): Number3 = number1.method1(tail)
 }
-case object Number2T extends Number2 {
+case class Number2T(tail: () => Number2) extends Number2 {
   override def method2(number1: Number1): Number3 = Number3T
 }
 
