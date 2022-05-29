@@ -1,5 +1,5 @@
 Settings.settings
 name := "a01"
 
-javaOptions += "-Xss10m"
+javaOptions += "-Xss180k"
 run / fork := true
