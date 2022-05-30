@@ -46,9 +46,7 @@ case class Number4S(tail: Number4) extends Number4 {
   override def method3(num1: Number1): Unit = {
     preTemp = num1
   }
-  override def method4(num2: Number2): Unit = {
-
-  }
+  override def method4(num2: Number2): Unit = {}
 }
 case object Number4T extends Number4 {
   override def method3(num1: Number1): Unit = {}
