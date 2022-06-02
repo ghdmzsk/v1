@@ -1,5 +1,6 @@
 Settings.settings
 name := "a04"
+moduleName := "wip04"
 
-javaOptions += "-Xss180k"
+javaOptions += "-Xss10m"
 run / fork := true
