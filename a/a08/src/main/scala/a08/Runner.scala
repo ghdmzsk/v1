@@ -1,28 +1,30 @@
 package a08
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.io.StdIn
+
 object Runner {
 
-  lazy val number1ZeroU: Number1 = Number1U(() => number1ZeroU)
-  lazy val number2ZeroT: Number2 = Number2T(() => number2ZeroT)
+  lazy val number1ZeroU: Number1 = Number1U(() => Future(number1ZeroU))
+  lazy val number2ZeroT: Number2 = Number2T(() => Future(number2ZeroT))
 
-  def number1Gen1(n: Int): Number1                   = if (n > 0) Number1T(number1Gen1(n - 1)) else number1ZeroU
-  def number1Gen3(n: Int): Number1                   = if (n > 0) Number1S(() => number1Gen3(n - 1)) else number1ZeroU
-  def number1Gen4(n: Int): Number1                   = if (n > 0) Number1S(() => number1Gen4(n - 1)) else number1ZeroU
-  def number1Gen5(n: Int, zero: => Number1): Number1 = if (n > 0) Number1T(number1Gen5(n - 1, zero)) else zero
-  def number1Gen6(n: Int, zero: => Number1): Number1 = if (n > 0) Number1S(() => number1Gen6(n - 1, zero)) else zero
-  def number2Gen(n: Int): Number2                    = if (n > 0) Number2S(number2Gen(n - 1)) else number2ZeroT
+  def number1Gen1(n: Int): Number1                   = if (n > 0) Number1T(() => Future(number1Gen1(n - 1))) else number1ZeroU
+  def number1Gen3(n: Int): Number1                   = if (n > 0) Number1S(() => Future(number1Gen3(n - 1))) else number1ZeroU
+  def number1Gen4(n: Int): Number1                   = if (n > 0) Number1S(() => Future(number1Gen4(n - 1))) else number1ZeroU
+  def number1Gen5(n: Int, zero: => Number1): Number1 = if (n > 0) Number1T(() => Future(number1Gen5(n - 1, zero))) else zero
+  def number1Gen6(n: Int, zero: => Number1): Number1 = if (n > 0) Number1S(() => Future(number1Gen6(n - 1, zero))) else zero
+  def number2Gen(n: Int): Number2                    = if (n > 0) Number2S(() => Future(number2Gen(n - 1))) else number2ZeroT
 
-  def count(number: () => Number3): Int = {
-    val next =
-      try {
-        Option(number())
-      } catch {
-        case _: StackOverflowError => Option.empty
-      }
-    next match {
-      case Some(Number3S(tail)) => count(tail) + 1
-      case None                 => 0
+  val countContext = new NumberCount
+
+  def count: Unit = {
+    var num = 0
+    countContext.map.foreach { case (i, v) =>
+      num += 1
+      assert(i.except == v)
     }
+    println(s"统计了 $num 个结果")
   }
 
   def main(arr: Array[String]): Unit = {
@@ -32,30 +34,19 @@ object Runner {
         i1 <- 0 to 20
         i2 <- 0 to 20
       } {
-        val countNum1 = {
+        {
           val number1 = number1Gen1(i1)
           def number2 = number2Gen(i2)
-          def number3 = number2.method2(number1)
-          val count1  = count(() => number3)
-          val result1 = if (i2 == 0) 0 else i1 + i2
-          assert(count1 == result1)
-          count1
+          val result1 = Input(i1, i2, if (i2 == 0) 0 else i1 + i2, "加法1")(countContext)
+          number2.method2(number1, result1)
         }
 
-        val countNum2: Int = {
+        {
           val number1 = number1Gen1(i1)
           def number2 = number2Gen(i2)
-          def number3 = number1.method1(number2)
-          val count1  = count(() => number3)
-          val result1 = i1 + i2 + 1
-          assert(count1 == result1)
-          count1
+          val result1 = Input(i1, i2, i1 + i2 + 1, "加法2")(countContext)
+          number1.method1(number2, result1)
         }
-
-        if (i2 == 0)
-          assert(countNum2 == countNum1 + i1 + 1)
-        else
-          assert(countNum2 == countNum1 + 1)
       }
     }
 
@@ -65,34 +56,24 @@ object Runner {
         i1 <- 0 to 20
         i2 <- 0 to 20
       } {
-        val countNum1 = {
+        {
           val number1 = number1Gen4(i1)
           val number2 = number2Gen(i2)
-          def number3 = number2.method2(number1)
-          val count1  = count(() => number3)
-          val result1 = if (i2 - i1 > 0) i2 - i1 else 0
-          assert(count1 == result1)
-          count1
+          val result1 = Input(i1, i2, if (i2 - i1 > 0) i2 - i1 else 0, "减法1")(countContext)
+          number2.method2(number1, result1)
         }
 
-        val countNum2 = {
+        {
           val number1 = number1Gen3(i1)
           val number2 = number2Gen(i2)
-          def number3 = number1.method1(number2)
-          val count1  = count(() => number3)
-          val result1 = if (i2 - i1 + 1 > 0) i2 - i1 + 1 else 0
-          assert(count1 == result1)
-          count1
+          val result1 = Input(i1, i2, if (i2 - i1 + 1 > 0) i2 - i1 + 1 else 0, "减法2")(countContext)
+          number1.method1(number2, result1)
         }
 
-        if (i2 - i1 >= 0)
-          assert(countNum1 == countNum2 - 1)
-        else
-          assert(countNum1 == countNum2)
       }
     }
 
-    {
+    /*{
       // 乘法
       for {
         i1 <- 0 to 20
@@ -215,7 +196,12 @@ object Runner {
 
         assert(countNum2 == countNum1 - 1)
       }
-    }
+    }*/
+
+    println("Press any key to count.")
+    StdIn.readLine()
+
+    count
   }
 
 }
