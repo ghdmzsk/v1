@@ -37,7 +37,7 @@ object NumberGen:
     n
   end numberGen18
 
-  def numberGen19(number: () => Number1, n: Int): () => Number1 = () => throw new Exception
+  def numberGen19(number: () => Number1, n: Int): () => Number1 = () => throw EndException()
 
   val partGen: List[(Char, (() => Number1, Int) => () => Number1)] = List(
     ('a', numberGen1),
@@ -71,15 +71,24 @@ object NumberGen:
     num1
   end genNumber
 
-  def count(num: () => Number1): Int =
+  def countImpl(num: () => Number1): Int =
     val next =
       try Option(num())
-      catch case _: Throwable => Option.empty
+      catch case _: StackOverflowError => Option.empty
+            case EndException() => Option.empty
 
     next.match
-      case Some(Number1Y(tail)) => count(tail) + 1
+      case Some(Number1Y(tail)) => countImpl(tail) + 1
       case Some(Number1S)       => 0
       case None                 => 0
+  end countImpl
+
+  def count(num: () => Number1): Option[Int] =
+    val r =
+      try Option(countImpl(num))
+      catch case _: StackOverflowError => Option.empty
+
+    r.filter(_ < 2000)
   end count
 
 end NumberGen

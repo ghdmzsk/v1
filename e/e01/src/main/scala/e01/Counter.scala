@@ -1,15 +1,18 @@
 package e01
 
+case class EndException() extends Exception:
+end EndException
+
 trait Number1:
   def method(num: () => Number1): () => Number1
 end Number1
 
 case object Number1S extends Number1:
-  override def method(num: () => Number1): () => Number1 = () => throw new Exception
+  override def method(num: () => Number1): () => Number1 = () => throw new EndException
 end Number1S
 
 case object Number1T extends Number1:
-  override def method(num: () => Number1): () => Number1 = () => Number1Y(() => throw new Exception)
+  override def method(num: () => Number1): () => Number1 = () => Number1Y(() => throw new EndException)
 end Number1T
 
 case object Number1U extends Number1:
