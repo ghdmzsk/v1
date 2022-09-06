@@ -7,7 +7,7 @@ object Settings {
   val setting1 = scalaVersion      := "2.13.8"
   val setting2 = scalafmtOnCompile := true
 
-  val setting3 = scalaVersion      := "3.1.0"
+  val setting3 = scalaVersion      := "3.2.0"
   val setting4 = scalacOptions ++= Seq("-feature")
   val setting5 = scalacOptions ++= Seq("-feature", "-deprecation", "-Ymacro-annotations")
   val setting6 = Compile / compile := ((Compile / compile) dependsOn (Compile / scalafmtSbt)).value
