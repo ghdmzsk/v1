@@ -8,8 +8,8 @@ object Runner {
         val num1 = Number3.fromInt(i)
         assert(num1.size == i)
 
-        var current: Number3 = num1
-        var i1               = i
+        var current: Any = num1
+        var i1           = i
 
         while (current != null) {
           // Number3T 代表有前驱

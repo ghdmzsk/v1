@@ -9,10 +9,10 @@ object Number3U extends Number3 {
   override def size: Int = 0
 }
 
-// 有后继
-trait Number3S extends Number3 {
+// 可以产生后继
+trait Number3S {
   val next: () => Number3T
-  override def size: Int
+  def size: Int
 }
 case class Number3S1(override val next: () => Number3T) extends Number3S {
   override def size: Int = 0
@@ -31,7 +31,7 @@ case class Number3ST(override val pre: Number3S, override val next: () => Number
 
 object Number3 {
 
-  def add(num: Number3): Number3 = num match {
+  def add(num: Number3): Number3T = num match {
     case Number3U =>
       lazy val t0: Number3S = Number3S1(() => t1)
       lazy val t1: Number3T = Number3T1(t0)
