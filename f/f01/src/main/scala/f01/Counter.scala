@@ -11,10 +11,10 @@ object Number3U extends Number3 {
 
 // 有后继
 trait Number3S extends Number3 {
-  var next: Number3T = null
+  val next: () => Number3T
   override def size: Int
 }
-class Number3S1 extends Number3S {
+case class Number3S1(override val next: () => Number3T) extends Number3S {
   override def size: Int = 0
 }
 
@@ -27,23 +27,21 @@ trait Number3T extends Number3 {
 case class Number3T1(override val pre: Number3S) extends Number3T
 
 // 既有前驱又有后继
-case class Number3ST(override val pre: Number3S) extends Number3T with Number3S
+case class Number3ST(override val pre: Number3S, override val next: () => Number3T) extends Number3T with Number3S
 
 object Number3 {
 
-  def fromInt(n: Int): Number3 = {
-    if (n > 0)
-      Number3T1(fromIntImpl(n - 1))
-    else Number3U
+  def add(num: Number3): Number3 = num match {
+    case Number3U =>
+      lazy val t0: Number3S = Number3S1(() => t1)
+      lazy val t1: Number3T = Number3T1(t0)
+      t1
+    case t: Number3T =>
+      lazy val t1: Number3S = Number3ST(t.pre, () => t2)
+      lazy val t2: Number3T = Number3T1(t1)
+      t2
   }
 
-  private def fromIntImpl(n: Int): Number3S = {
-    if (n > 0) {
-      val num     = fromIntImpl(n - 1)
-      val numNext = Number3ST(num)
-      num.next = numNext
-      numNext
-    } else new Number3S1
-  }
+  def fromInt(n: Int): Number3 = if (n > 0) add(fromInt(n - 1)) else Number3U
 
 }
