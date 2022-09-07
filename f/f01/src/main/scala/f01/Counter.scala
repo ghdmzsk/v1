@@ -8,10 +8,15 @@ end Number3
 // 零
 object Number3S extends Number3:
   override def size: Int = 0
+
+  private def addImpl: Number4 =
+    given (() => Number3) = () => add
+    new Number4S
+  end addImpl
+
   override def add: Number3 =
-    given (() => Number3) = () => new Number3T1
-    given Number4         = new Number4S
-    summon[() => Number3]()
+    given Number4 = addImpl
+    new Number3T1
   end add
 end Number3S
 
@@ -28,14 +33,15 @@ end Number4S
 trait Number3T(using Number4) extends Number3:
   val pre: Number4 = summon
   override def size: Int
+
+  private def addImpl: Number4 =
+    given (() => Number3) = () => add
+    new Number3ST
+  end addImpl
+
   override def add: Number3 =
-    def num4 = new Number3ST
-
-    given (() => Number3) =
-      given Number4 = num4
-      () => new Number3T1
-
-    summon[() => Number3]()
+    given Number4 = addImpl
+    new Number3T1
   end add
 end Number3T
 // 不考虑后继特性
