@@ -45,7 +45,7 @@ class Number3T1(using Number4) extends Number3T:
 end Number3T1
 
 // 既有前驱又考虑后继特性
-class Number3ST(using Number4)(using() => Number3) extends Number3T, Number4:
+class Number3ST(using Number4, () => Number3) extends Number3T, Number4:
   override def preSize: Int = pre.preSize + 1
   override def size: Int    = next().size - 1
 end Number3ST
