@@ -29,8 +29,13 @@ trait Number3T(using Number4) extends Number3:
   val pre: Number4 = summon
   override def size: Int
   override def add: Number3 =
-    given (() => Number3) = () => new Number3T1
-    given Number4         = new Number3ST(using pre)
+    def num4: Number4 = new Number3ST
+
+    given (() => Number3) =
+      given Number4         = num4
+      given (() => Number3) = () => new Number3T1
+      summon[() => Number3]
+
     summon[() => Number3]()
   end add
 end Number3T
