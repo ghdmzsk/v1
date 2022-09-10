@@ -9,20 +9,15 @@ end Number3
 object Number3S extends Number3:
   override def size: Int = 0
 
-  private def addImpl: Number4 =
-    given Number3 = add
-    new Number4S
-  end addImpl
-
   override def add: Number3 =
-    given (() => Number4) = () => addImpl
-    new Number3T1
+    given Number3          = new Number3T1(() => num4)
+    lazy val num4: Number4 = new Number4S
+    summon[Number3]
   end add
 end Number3S
 
 // 考虑后继特性
 trait Number4(using Number3):
-  val next: Number3 = summon
   def preSize: Int
 end Number4
 class Number4S(using Number3) extends Number4:
@@ -30,29 +25,24 @@ class Number4S(using Number3) extends Number4:
 end Number4S
 
 // 有前驱
-trait Number3T(using() => Number4) extends Number3:
-  val pre: () => Number4 = summon
+trait Number3T(pre: () => Number4) extends Number3:
   override def size: Int
 
-  private def addImpl: Number4 =
-    given Number3 = add
-    new Number3ST
-  end addImpl
-
   override def add: Number3 =
-    given (() => Number4) = () => addImpl
-    new Number3T1
+    given Number3          = new Number3T1(() => num4)
+    lazy val num4: Number4 = new Number3ST(pre)
+    summon[Number3]
   end add
 end Number3T
 // 不考虑后继特性
-class Number3T1(using() => Number4) extends Number3T:
+class Number3T1(val pre: () => Number4) extends Number3T(pre):
   override def size: Int = pre().preSize + 1
 end Number3T1
 
 // 既有前驱又考虑后继特性
-class Number3ST(using() => Number4, Number3) extends Number3T, Number4:
+class Number3ST(val pre: () => Number4)(using Number3) extends Number3T(pre), Number4:
   override def preSize: Int = pre().preSize + 1
-  override def size: Int    = next.size - 1
+  override def size: Int    = summon[Number3].size - 1
 end Number3ST
 
 object Number3:

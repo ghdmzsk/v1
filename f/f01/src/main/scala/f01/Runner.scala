@@ -54,10 +54,10 @@ object Runner {
 
           current.match
             case s: Number3T1 =>
-              currentImpl = Option(s.pre)
+              currentImpl = Option(s.pre())
               i1 -= 1
             case s: Number3ST =>
-              currentImpl = Option(s.pre)
+              currentImpl = Option(s.pre())
               i1 -= 1
             case _ =>
               currentImpl = Option.empty
