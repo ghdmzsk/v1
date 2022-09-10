@@ -31,3 +31,4 @@ val c01 = project in cRoot / "c01"
 val e01 = project in eRoot / "e01"
 
 val f01 = project in fRoot / "f01"
+val f02 = project in fRoot / "f02"
