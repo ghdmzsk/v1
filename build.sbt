@@ -32,3 +32,4 @@ val e01 = project in eRoot / "e01"
 
 val f01 = project in fRoot / "f01"
 val f02 = project in fRoot / "f02"
+val f03 = project in fRoot / "f03"
