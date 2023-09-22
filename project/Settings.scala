@@ -1,13 +1,14 @@
 import sbt._
 import sbt.Keys._
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.{scalafmtOnCompile, scalafmtSbt}
+import djx.sbt.depts.output.Djx314DeptsPlugin.autoImport.scalaV
 
 object Settings {
 
-  val setting1 = scalaVersion      := "2.13.8"
+  val setting1 = scalaVersion      := scalaV.v213
   val setting2 = scalafmtOnCompile := true
 
-  val setting3 = scalaVersion      := "3.2.0"
+  val setting3 = scalaVersion      := scalaV.v3
   val setting4 = scalacOptions ++= Seq("-feature")
   val setting5 = scalacOptions ++= Seq("-feature", "-deprecation", "-Ymacro-annotations")
   val setting6 = Compile / compile := ((Compile / compile) dependsOn (Compile / scalafmtSbt)).value
